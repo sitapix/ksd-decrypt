@@ -1,0 +1,68 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "KSD Decrypt",
+  "version": "1.0.0",
+  "identifier": "app.unfold.recovery",
+  "build": {
+    "beforeBuildCommand": "npm run build",
+    "beforeDevCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "KSD Decrypt",
+        "width": 600,
+        "height": 600,
+        "minWidth": 480,
+        "minHeight": 360,
+        "resizable": true,
+        "maximizable": true,
+        "backgroundColor": "#f7f3ff",
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true,
+        "trafficLightPosition": {
+          "x": 16,
+          "y": 22
+        },
+        "label": "main"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src ipc: http://ipc.localhost; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'",
+      "capabilities": [
+        "main"
+      ]
+    },
+    "macOSPrivateApi": true
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "app",
+      "dmg",
+      "nsis"
+    ],
+    "category": "Utility",
+    "shortDescription": "Decrypt legacy KeepSafe photos and videos.",
+    "longDescription": "Recover legacy Android KeepSafe files locally. Stream large photos and videos directly to disk without changing your originals.",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "macOS": {
+      "minimumSystemVersion": "12.3"
+    },
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser"
+      },
+      "minimumWebview2Version": "110.0.1531.0",
+      "webviewInstallMode": {
+        "type": "offlineInstaller"
+      }
+    }
+  }
+}

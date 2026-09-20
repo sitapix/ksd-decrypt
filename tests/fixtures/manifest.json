@@ -1,0 +1,97 @@
+[
+  {
+    "name": "sample.jpg.ksd",
+    "sha256": "abdfdc3fe4e311cf5220d2e496e5e4d23db79cedfc481e372e0ca35b1d19d6f8",
+    "size": 2546
+  },
+  {
+    "name": "sample.png.ksd",
+    "sha256": "44c2b594f2546e4239680f615255ded40447621efb3df416843c190ed5905577",
+    "size": 985
+  },
+  {
+    "name": "sample.gif.ksd",
+    "sha256": "ca5ef1cf706e14ed77c4269dad20c461432838d65d8eda02f4d1e52852b6d5d6",
+    "size": 931
+  },
+  {
+    "name": "sample.webp.ksd",
+    "sha256": "64245a9fe8ab0b0e6dcc43aedf28c27f0511b9fb357ba6c36e235a903d48578c",
+    "size": 890
+  },
+  {
+    "name": "sample.bmp.ksd",
+    "sha256": "e5749b608593a68196013ff68689b50dc6e26491ebb2af68ba7733ce7d4b45f3",
+    "size": 48054
+  },
+  {
+    "name": "sample.tif.ksd",
+    "sha256": "9a94c66b5d9fc7ccf6347b2c5879a9d13a268cdd1c53644ee3afa281358effc4",
+    "size": 48140
+  },
+  {
+    "name": "sample.ico.ksd",
+    "sha256": "124ef7a48a3d7af77dbdc798f607c4243c5b9d3e2952869f9bb1f97a8c938386",
+    "size": 4137
+  },
+  {
+    "name": "progressive.jpg.ksd",
+    "sha256": "129822d27972b1c084af4f35d5e1d4e71d1d5c708a85888345435f3738ee5b3c",
+    "size": 2148
+  },
+  {
+    "name": "padded.jpg.ksd",
+    "sha256": "dbabacb7166e71f8069d60cc149127695ed723d1bfddb1ecf979756c472bce83",
+    "size": 3150
+  },
+  {
+    "name": "chunk-boundary.jpg.ksd",
+    "sha256": "de33df168c8a77589cc825d891b9199f76f8565b258e6e764a151f059a279df2",
+    "size": 8390787
+  },
+  {
+    "name": "sample.mp4.ksd",
+    "sha256": "a24431c4ce8d2da7a93023ab3860355b51e5cdb58c51a2ca64326b4f320a70cb",
+    "size": 7534
+  },
+  {
+    "name": "sample.mov.ksd",
+    "sha256": "354a50236a773b985c3d438655eef921fc676d88108a9c3be4de055e45912228",
+    "size": 27274
+  },
+  {
+    "name": "sample.3gp.ksd",
+    "sha256": "4511ee10a18b7483dab6680e02a7610576659615dfb1f0ee75b449c375303f52",
+    "size": 28118
+  },
+  {
+    "name": "sample.webm.ksd",
+    "sha256": "4ad8356d85300121bbab81acdfb1b74551d216ca6a406d80cc30d28e6b10f55c",
+    "size": 7590
+  },
+  {
+    "name": "sample.mkv.ksd",
+    "sha256": "bd4189a50ea547fbd39e7efe3a7751ac2913d0957ce2d30b30b3103ea6b91f72",
+    "size": 32718
+  },
+  {
+    "name": "sample.avi.ksd",
+    "sha256": "978497c902df4779b04b94da56d63f82fc431f5f072be46dc2724cb03fe94517",
+    "size": 32440
+  },
+  {
+    "name": "sample.mpg.ksd",
+    "sha256": "c6ac98df77e66c2dd1dca10b2e7c70f40a028e50ab2e2a0675fc0b7be76f341c",
+    "size": 28672
+  },
+  {
+    "name": "sample.wmv.ksd",
+    "sha256": "5b8151894214e0b2af75e194b9322681dded72ce0b0a6b9e39da824c0052b4ca",
+    "size": 32723
+  },
+  {
+    "name": "sample.flv.ksd",
+    "sha256": "f5dfdfa4ecec23a78d81974f0cf7b306b2d51454911324302fb7cfb17cf47eb9",
+    "size": 27509
+  }
+]

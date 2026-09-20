@@ -1,0 +1,40 @@
+[package]
+name = "ksd-decrypt"
+version = "1.0.0"
+description = "Private recovery for legacy KeepSafe photos and videos"
+authors = ["KSD Decrypt contributors"]
+edition = "2024"
+rust-version = "1.85"
+default-run = "ksd-decrypt"
+
+[lib]
+name = "ksd_decrypt_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.6.3", features = [] }
+
+[dependencies]
+tauri = { version = "2.11.6", features = ["macos-private-api"] }
+tauri-plugin-dialog = "2.7.3"
+tauri-plugin-opener = "2.5.5"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+aes = "0.8"
+ctr = "0.9"
+crc32fast = "1"
+sha2 = "0.10"
+infer = "0.19"
+tempfile = "3"
+walkdir = "2"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+block2 = "0.6.2"
+objc2 = "0.6.4"
+objc2-app-kit = { version = "0.3.2", default-features = false, features = ["std", "NSApplication", "NSOpenPanel", "NSPanel", "NSResponder", "NSSavePanel", "NSWindow", "block2"] }
+objc2-foundation = { version = "0.3.2", default-features = false, features = ["std", "NSArray", "NSString", "NSURL"] }
+
+[profile.release]
+lto = "thin"
+strip = true

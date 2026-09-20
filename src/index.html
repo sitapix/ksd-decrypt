@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>KSD Decrypt</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="toolbar" data-tauri-drag-region>
+      <h1 data-tauri-drag-region>KSD Decrypt</h1>
+      <div class="toolbar-actions">
+        <button hidden id="open-folder" class="button button-toolbar button-icon" aria-label="Show recovered files" title="Show recovered files"><i class="icon" data-lucide="folder-open" aria-hidden="true"></i></button>
+      <details id="more-actions" class="more-actions">
+        <summary id="more-trigger" aria-label="More options" title="More options"><i class="icon" data-lucide="ellipsis" aria-hidden="true"></i></summary>
+        <div class="menu-panel">
+          <button id="add-files" type="button">Add files or folders</button>
+          <button id="choose-folder" type="button">Add a folder</button>
+          <button id="change-destination" type="button">Output folder…</button>
+          <button id="clear-button" type="button" hidden>Start over</button>
+          <button id="help-button" type="button">Help</button>
+        </div>
+      </details>
+      </div>
+    </header>
+
+    <main id="main">
+      <div id="notice" class="notice" role="status" hidden></div>
+      <section id="workspace" class="workspace" aria-label="File recovery">
+        <div id="drop-zone" class="drop-zone">
+          <div class="drop-content">
+            <div class="drop-emblem" aria-hidden="true">
+              <i class="icon" data-lucide="folder-open" aria-hidden="true"></i>
+              <span class="drop-emblem-check"><i class="icon" data-lucide="check" aria-hidden="true"></i></span>
+            </div>
+            <h2 id="drop-title">Drop .ksd files or a folder</h2>
+            <button id="choose-files" class="button button-primary">Choose files or folders…</button>
+            <div id="drop-notice" class="notice" role="status" hidden></div>
+          </div>
+        </div>
+
+        <div id="file-area" hidden>
+            <label id="search-area" class="search" hidden>
+              <span class="sr-only">Search filenames</span>
+              <input id="search" type="search" placeholder="Find a file" autocomplete="off">
+            </label>
+          <ul id="file-list" class="file-list" aria-label="Files to recover" tabindex="0"></ul>
+          <div id="pagination" class="pagination" hidden>
+            <button id="previous-page" class="button button-quiet button-icon" aria-label="Previous page" title="Previous page"><i class="icon" data-lucide="chevron-left" aria-hidden="true"></i></button>
+            <span id="page-label"></span>
+            <button id="next-page" class="button button-quiet button-icon" aria-label="Next page" title="Next page"><i class="icon" data-lucide="chevron-right" aria-hidden="true"></i></button>
+          </div>
+        </div>
+
+        <div id="progress-area" class="progress-area" hidden>
+          <div class="progress-top"><strong id="progress-title" role="status">Recovering files…</strong><span id="progress-percent" aria-hidden="true">0%</span></div>
+          <progress id="progress" max="100" value="0" aria-label="Recovery progress"></progress>
+          <div class="progress-bottom"><span id="progress-detail"></span><button id="stop-button" class="button button-quiet button-icon" aria-label="Stop recovery" title="Stop recovery"><i class="icon" data-lucide="square" aria-hidden="true"></i></button></div>
+        </div>
+
+        <div id="recovery-actions" class="recovery-actions" hidden>
+          <button id="recover-button" class="button button-primary" disabled>Continue</button>
+        </div>
+      </section>
+    </main>
+    <footer class="statusbar">
+      <span id="file-count" hidden></span>
+        <div id="completion" class="completion" role="status" hidden>
+          <span id="completion-title" class="sr-only"></span>
+          <p id="completion-detail" hidden></p>
+
+        </div>
+    </footer>
+
+  </div>
+
+  <dialog id="help-dialog" class="dialog" aria-labelledby="help-title">
+    <div class="dialog-heading"><h2 id="help-title">Help</h2><button class="button button-quiet button-icon" data-close="help-dialog" aria-label="Close help" title="Close"><i class="icon" data-lucide="x" aria-hidden="true"></i></button></div>
+    <p>Decrypted copies save beside the originals. Use More → Output folder to save elsewhere.</p>
+    <p>Click a filename to open it, or its folder button to show it in a folder.</p>
+    <details id="format-details">
+      <summary>Compatibility</summary>
+      <p>Supports old Android KeepSafe vaults with the original built-in key. Newer vaults and other keys won’t decrypt.</p>
+      <p>Photos and videos keep their original format. Playback depends on your system’s codecs.</p>
+    </details>
+  </dialog>
+  <dialog id="close-dialog" class="dialog small-dialog" aria-labelledby="close-title">
+    <h2 id="close-title">Stop recovery?</h2>
+    <p>You’ll keep completed files.</p>
+    <div class="dialog-actions"><button id="keep-running" class="button button-secondary">Continue</button><button id="stop-close" class="button button-primary">Stop and close</button></div>
+  </dialog>
+</body>
+</html>
