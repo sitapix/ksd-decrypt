@@ -45,6 +45,16 @@ python3 -m unittest discover -s .github/scripts -p 'test_*.py'
 bash -n .github/scripts/publish-release.sh
 ```
 
-Local tests cover documentation gating, runtime changes mixed with docs, real Git renames/deletions, missing history, forced full tag/manual builds, mismatched release versions, partial upload failures, prereleases, and safe reruns. Live GitHub runs are still needed to verify hosted runners, permissions, caching, installer creation, and cancellation.
+Local tests cover documentation gating, runtime changes mixed with docs, real Git renames/deletions, missing history, forced full tag/manual builds, mismatched release versions, partial upload failures, prereleases, and safe reruns.
+
+## Live validation
+
+Verified on GitHub on September 20, 2026:
+
+- [Full Mac and Windows checks](https://github.com/sitapix/ksd-decrypt/actions/runs/35537519087) passed, including Rust lint, recovery tests, and all 24 browser tests on each platform.
+- [A documentation-only PR update](https://github.com/sitapix/ksd-decrypt/actions/runs/35537057973) passed with both native jobs skipped. It took 23 seconds of wall-clock time and 18 seconds of summed job duration.
+- [A superseded PR run](https://github.com/sitapix/ksd-decrypt/actions/runs/35537113998) was automatically cancelled. Feature-branch push runs allocated no jobs, leaving validation to the PR run.
+
+The full validation sample took 8 minutes 14 seconds of wall-clock time and 10 minutes 10 seconds of summed job duration. These are observed samples with different cache states, not a controlled before/after savings measurement. Job durations are not billing-weighted minutes. The savings come from avoiding native jobs on documentation-only updates and duplicate or stale runs; normal full checks retain parallel Mac and Windows jobs.
 
 Implementation references: [GitHub release links](https://docs.github.com/en/repositories/releasing-projects-on-github/linking-to-releases), [Tauri CI distribution](https://v2.tauri.app/distribute/pipelines/github/), and [actionlint](https://github.com/rhysd/actionlint).
