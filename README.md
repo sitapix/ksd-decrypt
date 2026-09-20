@@ -8,13 +8,6 @@ KSD Decrypt is a desktop app for recovering photos and videos from **legacy Andr
 
 Built with Tauri 2, Rust, and a framework-free TypeScript interface for Mac and Windows. KSD Decrypt is independent of KeepSafe and is not affiliated with or endorsed by it.
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/ksd-decrypt-dark.png">
-  <img src="docs/screenshots/ksd-decrypt-light.png" alt="KSD Decrypt welcome screen with a violet folder icon and a Choose files or folders button." width="600" height="600">
-</picture>
-
-*Interface preview. Native window controls and translucency vary by platform.*
-
 **Project status:** GitHub Actions builds universal Mac and Windows x64 installers for tagged releases. Installers are unsigned or ad-hoc signed; native installation and recovery still need verification on each target system.
 
 ## Features
@@ -141,7 +134,7 @@ npm run build:windows
 
 Build outputs appear under `src-tauri/target/`, with installers in the relevant `bundle/dmg/` or `bundle/nsis/` directories. For cross-compilation from macOS, see [Tauri's Windows build guide](https://v2.tauri.app/distribute/windows-installer/); verify the result on Windows before distribution.
 
-The [GitHub Actions workflow](.github/workflows/build.yml) runs checks on pull requests and default-branch pushes. Mac and Windows run in parallel, with npm and Rust dependency caches. Documentation-only changes run lightweight workflow and version checks; new commits cancel stale branch/PR runs. Manual runs also build both installers as artifacts retained for 14 days. Pushing a matching version tag builds both installers and publishes them together as a GitHub release. See [CI and release details](docs/ci.md).
+The [GitHub Actions workflow](.github/workflows/build.yml) runs checks on pull requests and default-branch pushes. Mac and Windows run in parallel, with npm and Rust dependency caches. Documentation-only changes run lightweight workflow and version checks; new commits cancel stale branch/PR runs. Manual runs also build both installers as artifacts retained for 14 days. Pushing a matching version tag builds both installers and publishes them together as a GitHub release.
 
 ### Run checks
 

@@ -39,7 +39,6 @@ KSD Decrypt recovery */
 *.[wW][mM][vV]
 *.[fF][lL][vV]
 
-# Public app artwork and the reviewed, empty-state README screenshots.
+# Public app artwork.
+!/app-icon.png
 !/src-tauri/icons/**
-!/docs/screenshots/ksd-decrypt-light.png
-!/docs/screenshots/ksd-decrypt-dark.png
