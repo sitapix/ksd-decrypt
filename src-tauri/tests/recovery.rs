@@ -215,7 +215,8 @@ fn output_names_are_portable_and_preserve_jpeg_aliases() {
         "Recovered-CON.jpg"
     );
     assert_eq!(
-        safe_filename(Path::new("a:b?.jpg.ksd"), &format),
-        "a_b_.jpg"
+        // A single letter before ':' would be a Windows drive prefix.
+        safe_filename(Path::new("photo:backup?.jpg.ksd"), &format),
+        "photo_backup_.jpg"
     );
 }
