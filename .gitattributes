@@ -1,0 +1,8 @@
+# Keep source formatting identical on Windows and macOS.
+* text=auto eol=lf
+
+# Encrypted fixtures and artwork must remain byte-for-byte unchanged.
+*.ksd binary
+*.png binary
+*.ico binary
+*.icns binary
