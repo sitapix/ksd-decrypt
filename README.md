@@ -47,7 +47,7 @@ Open [the latest release](https://github.com/sitapix/ksd-decrypt/releases/latest
 - **Mac:** [download the universal DMG](https://github.com/sitapix/ksd-decrypt/releases/latest/download/KSD-Decrypt-macOS-universal.dmg), open it, copy **KSD Decrypt** to **Applications**, and launch it. The same download supports Apple silicon and Intel.
 - **Windows:** [download the x64 installer](https://github.com/sitapix/ksd-decrypt/releases/latest/download/KSD-Decrypt-Windows-x64-setup.exe), run it, and launch **KSD Decrypt**. It installs for the current user.
 
-Each release includes `SHA256SUMS.txt` to verify the downloads. Choose an installer from **Assets**, rather than GitHub's source-code archives. Download links become available when the first stable release finishes building. You can also [build installers locally](#build-installers).
+Each release includes `SHA256SUMS.txt` to verify the downloads. Choose an installer from **Assets**, rather than GitHub's source-code archives. You can also [build installers locally](#build-installers).
 
 Platform trust warnings are expected for unsigned or ad-hoc-signed development builds. End users do not need Node.js, Rust, or Python.
 

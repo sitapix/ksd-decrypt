@@ -54,6 +54,7 @@ Verified on GitHub on September 20, 2026:
 - [Full Mac and Windows checks](https://github.com/sitapix/ksd-decrypt/actions/runs/35537519087) passed, including Rust lint, recovery tests, and all 24 browser tests on each platform.
 - [A documentation-only PR update](https://github.com/sitapix/ksd-decrypt/actions/runs/35537057973) passed with both native jobs skipped. It took 23 seconds of wall-clock time and 18 seconds of summed job duration.
 - [A superseded PR run](https://github.com/sitapix/ksd-decrypt/actions/runs/35537113998) was automatically cancelled. Feature-branch push runs allocated no jobs, leaving validation to the PR run.
+- [The v1.0.0 release run](https://github.com/sitapix/ksd-decrypt/actions/runs/35538801339) passed all checks, verified both Mac architectures, built both installers, and published [the release](https://github.com/sitapix/ksd-decrypt/releases/tag/v1.0.0) with checksums. Build caches are retained even on failure so packaging retries can reuse dependencies.
 
 The full validation sample took 8 minutes 14 seconds of wall-clock time and 10 minutes 10 seconds of summed job duration. These are observed samples with different cache states, not a controlled before/after savings measurement. Job durations are not billing-weighted minutes. The savings come from avoiding native jobs on documentation-only updates and duplicate or stale runs; normal full checks retain parallel Mac and Windows jobs.
 
