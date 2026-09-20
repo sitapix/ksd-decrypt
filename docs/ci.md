@@ -17,6 +17,8 @@ Use **Desktop checks** as the required branch-protection check. It reports succe
 
 The documentation allowlist covers root Markdown files, Markdown under `docs/`, the two reviewed README screenshots, and the synthetic-fixture README. Everything else runs full checks. Unavailable comparison commits also run full checks. Workflow changes deliberately exercise both native jobs because this workflow controls their build and packaging commands.
 
+The repository enforces LF line endings for source files, including Windows checkouts, so the same formatter checks pass on both operating systems. Encrypted fixtures and artwork are marked as binary to preserve their bytes.
+
 ## Release outputs
 
 - `KSD-Decrypt-macOS-universal.dmg`: contains the app, with both architectures checked using `lipo`.
