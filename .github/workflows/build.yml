@@ -83,6 +83,7 @@ jobs:
         with:
           workspaces: src-tauri -> target
           key: ${{ matrix.platform }}-${{ needs.prepare.outputs.package == 'true' && 'package' || 'check' }}
+          cache-on-failure: true
       - run: npm ci
       - run: npm run format:check
       - run: npm run fmt:check
@@ -96,7 +97,9 @@ jobs:
         if: needs.prepare.outputs.package == 'true' && runner.os == 'macOS'
         run: |
           npm run build:mac -- --ci -- --locked
-          lipo -verify_arch arm64 x86_64 "src-tauri/target/universal-apple-darwin/release/bundle/macos/KSD Decrypt.app/Contents/MacOS/ksd-decrypt"
+          for architecture in arm64 x86_64; do
+            lipo "src-tauri/target/universal-apple-darwin/release/bundle/macos/KSD Decrypt.app/Contents/MacOS/ksd-decrypt" -verify_arch "$architecture"
+          done
           mkdir -p release-assets
           cp src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg release-assets/KSD-Decrypt-macOS-universal.dmg
       - name: Build Windows x64 installer
