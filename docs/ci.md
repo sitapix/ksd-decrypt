@@ -11,6 +11,8 @@ The [workflow](../.github/workflows/build.yml) supports the app's two distributi
 | Manual workflow run | Full Mac + Windows checks | Both, saved for 14 days | No |
 | Matching `v*` tag push | Full Mac + Windows checks | Both, saved for 14 days | Published after both succeed |
 
+To build installers without publishing a release, open [Actions](https://github.com/sitapix/ksd-decrypt/actions/workflows/build.yml), select **Run workflow**, and choose a branch. Download the two installer artifacts from the completed run. Use a matching version tag when the installers should be published on the release page.
+
 Use **Desktop checks** as the required branch-protection check. It reports success for a verified documentation-only change and fails if preparation or either native job fails. There is no workflow-level path filter that could leave a required check pending. Branch protection is a repository setting, separate from this workflow.
 
 The documentation allowlist covers root Markdown files, Markdown under `docs/`, the two reviewed README screenshots, and the synthetic-fixture README. Everything else runs full checks. Unavailable comparison commits also run full checks. Workflow changes deliberately exercise both native jobs because this workflow controls their build and packaging commands.
