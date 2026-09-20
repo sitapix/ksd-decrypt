@@ -121,7 +121,8 @@ jobs:
   checks:
     name: Desktop checks
     needs: [prepare, build]
-    if: always() && needs.prepare.result != 'skipped'
+    # Report real failures, but do not turn a cancelled run into a failed check.
+    if: ${{ !cancelled() && needs.prepare.result != 'skipped' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
