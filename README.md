@@ -107,7 +107,7 @@ Open **More → Help** for a quick reminder of output locations and compatibilit
 | A recovered file will not open            | Try a viewer that supports its format and codec. Recovery does not convert media or guarantee complete media integrity.              |
 | A report could not be saved               | Check the reported folder's permissions and free space. A report-write failure does not remove completed recovered copies.           |
 
-No public support address or issue tracker is specified in this checkout. When reporting a problem to the person maintaining your copy, include the app version, operating system, exact error, and steps to reproduce it. Reports contain local file paths; redact personal information before sharing them, and use synthetic examples instead of private media where possible.
+Report problems through [GitHub Issues](https://github.com/sitapix/ksd-decrypt/issues). Include the app version, operating system, exact error, and steps to reproduce it. Reports contain local file paths; redact personal information before sharing them, and use synthetic examples instead of private media where possible.
 
 ## Development
 
