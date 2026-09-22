@@ -42,7 +42,14 @@ if sys.argv[1:3] == ['release', 'upload'] and os.environ['FAIL_UPLOAD'] == 'true
         self.assertEqual([command[1] for command in commands], ["view", "create", "upload", "edit"])
         self.assertIn("--draft", commands[1])
         self.assertIn("--verify-tag", commands[1])
-        self.assertEqual(sum(name.startswith("release-assets/") for name in commands[2]), 3)
+        self.assertEqual({name for name in commands[2] if name.startswith("release-assets/")}, {
+            "release-assets/KSD-Decrypt-macOS-universal.dmg",
+            "release-assets/KSD-Decrypt-macOS-arm64.dmg",
+            "release-assets/KSD-Decrypt-macOS-x64.dmg",
+            "release-assets/KSD-Decrypt-Windows-x64-setup.exe",
+            "release-assets/KSD-Decrypt-Windows-x64-offline-setup.exe",
+            "release-assets/SHA256SUMS.txt",
+        })
         self.assertIn("--draft=false", commands[3])
         self.assertIn("--latest", commands[3])
 

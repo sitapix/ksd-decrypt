@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" role="img" aria-labelledby="title description">
+  <title id="title">Purple K vault, unlocked</title>
+  <desc id="description">A soft purple K-shaped vault with its joined diagonal door slightly open at the center, unlocked by a large gold key on the right. Hand-built vector paths, gradients, and SVG filters only. The reference purple is #562BE5. The app tile has a charcoal-to-black gradient with a subtle gray rim.</desc>
+
+  <defs>
+    <!-- All appearance is vector geometry and native SVG shading. -->
+    <linearGradient id="tile" x1="280" y1="27" x2="700" y2="997" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#303030"/>
+      <stop offset=".48" stop-color="#1A1A1A"/>
+      <stop offset="1" stop-color="#080808"/>
+    </linearGradient>
+    <linearGradient id="tile-rim" x1="240" y1="27" x2="760" y2="997" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#737373"/>
+      <stop offset=".38" stop-color="#454545"/>
+      <stop offset="1" stop-color="#171717"/>
+    </linearGradient>
+    <linearGradient id="purple-stem" x1="174" y1="132" x2="424" y2="866" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7650F1"/>
+      <stop offset=".34" stop-color="#6034EB"/>
+      <stop offset=".67" stop-color="#562BE5"/>
+      <stop offset="1" stop-color="#4820CC"/>
+    </linearGradient>
+    <linearGradient id="purple-door" x1="544" y1="142" x2="817" y2="871" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7952F2"/>
+      <stop offset=".30" stop-color="#6234EA"/>
+      <stop offset=".58" stop-color="#562BE5"/>
+      <stop offset="1" stop-color="#4920CA"/>
+    </linearGradient>
+    <linearGradient id="door-edge" x1="416" y1="485" x2="603" y2="479" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#321477"/>
+      <stop offset=".45" stop-color="#4B269F"/>
+      <stop offset="1" stop-color="#8D6ADF"/>
+    </linearGradient>
+    <linearGradient id="cavity" x1="403" y1="525" x2="600" y2="525" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#160D2D"/>
+      <stop offset=".62" stop-color="#251342"/>
+      <stop offset="1" stop-color="#342055"/>
+    </linearGradient>
+    <linearGradient id="gold-ring" x1="436.63" y1="420.65" x2="502.42" y2="590.92" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF0B6"/>
+      <stop offset=".45" stop-color="#EBC66C"/>
+      <stop offset="1" stop-color="#AF7830"/>
+    </linearGradient>
+    <linearGradient id="lock-recess" x1="452.15" y1="443.09" x2="496.88" y2="580.8" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#593811"/>
+      <stop offset=".45" stop-color="#966C31"/>
+      <stop offset="1" stop-color="#FFE4A2"/>
+    </linearGradient>
+    <linearGradient id="gold-shaft" x1="590" y1="446" x2="590" y2="512" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF3BB"/>
+      <stop offset=".26" stop-color="#F7DA88"/>
+      <stop offset=".69" stop-color="#EAC064"/>
+      <stop offset="1" stop-color="#B98836"/>
+    </linearGradient>
+    <linearGradient id="gold-teeth" x1="601" y1="494" x2="601" y2="572" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DCB35B"/>
+      <stop offset=".38" stop-color="#EFC875"/>
+      <stop offset="1" stop-color="#CE9D48"/>
+    </linearGradient>
+    <linearGradient id="gold-bow" x1="738" y1="335" x2="951" y2="625" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF0B3"/>
+      <stop offset=".30" stop-color="#F5D680"/>
+      <stop offset=".72" stop-color="#E9BD62"/>
+      <stop offset="1" stop-color="#C18B3B"/>
+    </linearGradient>
+    <linearGradient id="gold-side" x1="746" y1="385" x2="951" y2="642" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E8C16B"/>
+      <stop offset="1" stop-color="#AB7430"/>
+    </linearGradient>
+
+    <filter id="tile-relief" x="-10%" y="-10%" width="120%" height="125%" color-interpolation-filters="sRGB">
+
+      <feGaussianBlur in="SourceAlpha" stdDeviation="7" result="soft"/>
+      <feOffset in="soft" dx="-5" dy="-9" result="inset"/>
+      <feComposite in="SourceAlpha" in2="inset" operator="out" result="rim"/>
+      <feFlood flood-color="#000000" flood-opacity=".48"/>
+      <feComposite in2="rim" operator="in" result="shading"/>
+      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="shading"/></feMerge>
+    </filter>
+    <filter id="object-shadow" x="-35%" y="-20%" width="170%" height="155%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="16" result="blur"/>
+      <feOffset in="blur" dx="12" dy="23" result="offset"/>
+      <feFlood flood-color="#322C43" flood-opacity=".25"/>
+      <feComposite in2="offset" operator="in" result="shadow"/>
+      <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="purple-bevel" x="-25%" y="-20%" width="150%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8" result="soft"/>
+      <feOffset in="soft" dx="9" dy="11" result="down"/>
+      <feComposite in="SourceAlpha" in2="down" operator="out" result="lightEdge"/>
+      <feFlood flood-color="#D6C8FF" flood-opacity=".63"/>
+      <feComposite in2="lightEdge" operator="in" result="light"/>
+      <feOffset in="soft" dx="-10" dy="-11" result="up"/>
+      <feComposite in="SourceAlpha" in2="up" operator="out" result="darkEdge"/>
+      <feFlood flood-color="#26066D" flood-opacity=".49"/>
+      <feComposite in2="darkEdge" operator="in" result="dark"/>
+      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="light"/><feMergeNode in="dark"/></feMerge>
+    </filter>
+    <filter id="gold-bevel" x="-25%" y="-20%" width="150%" height="145%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="soft"/>
+      <feOffset in="soft" dx="5" dy="7" result="down"/>
+      <feComposite in="SourceAlpha" in2="down" operator="out" result="lightEdge"/>
+      <feFlood flood-color="#FFFFE9" flood-opacity=".75"/>
+      <feComposite in2="lightEdge" operator="in" result="light"/>
+      <feOffset in="soft" dx="-5" dy="-7" result="up"/>
+      <feComposite in="SourceAlpha" in2="up" operator="out" result="darkEdge"/>
+      <feFlood flood-color="#8D571D" flood-opacity=".43"/>
+      <feComposite in2="darkEdge" operator="in" result="dark"/>
+      <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="light"/><feMergeNode in="dark"/></feMerge>
+    </filter>
+    <filter id="key-shadow" x="-25%" y="-30%" width="160%" height="175%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="blur"/>
+      <feOffset in="blur" dx="8" dy="16" result="offset"/>
+      <feFlood flood-color="#26172E" flood-opacity=".24"/>
+      <feComposite in2="offset" operator="in" result="shadow"/>
+      <feMerge><feMergeNode in="shadow"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <path id="door-shape" d="M590 133 H764 C794 133 804 158 785 185 L585 442 C570 461 568 474 581 492 L806 831 C823 857 809 880 778 880 H597 C577 880 566 873 555 856 L418 655 C407 639 403 626 403 608 V442 C403 421 408 410 422 393 L564 150 C571 139 578 133 590 133Z"/>
+    <path id="key-bow" fill-rule="evenodd" d="M841 329 C899 329 929 346 938 380 C945 409 947 454 947 487 C947 535 944 575 931 596 C916 621 886 633 842 633 C797 633 766 621 751 599 C737 578 733 539 733 491 C733 448 736 401 748 375 C762 344 793 329 841 329Z M844 408 C822 408 808 416 806 434 C803 453 803 474 803 495 C803 517 804 538 808 550 C812 563 824 569 845 569 C866 569 878 562 881 548 C885 531 886 510 886 488 C886 463 885 441 881 427 C877 414 864 408 844 408Z"/>
+    <!-- Both outlines share one lightly angled plane, anchored at the key entry (476, 481). -->
+    <path id="lock-plate-shape" d="M476 412 C501.04 413.78 520.43 445.03 520.43 481.95 C520.43 501.04 515.1 518.43 506.08 531.39 L506.08 574.02 Q506.08 588.56 492.21 590.14 L459.22 593.92 Q443.93 595.67 443.93 580.17 L443.93 534.72 C433.47 521.71 427.09 503.06 427.09 482.05 C427.09 441.4 449.6 410.12 476 412 Z"/>
+    <path id="keyhole-opening" d="M476 442 C489.39 442.54 498.73 459.52 498.73 481 C498.73 490.77 496.88 501.55 493.15 509.49 L493.15 574.32 L458.22 577.74 L458.22 510.53 C454.18 502.47 452.15 491.25 452.15 481 C452.15 458.46 462.23 441.45 476 442 Z"/>
+    <linearGradient id="lock-side" x1="432" y1="414" x2="449" y2="602" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D7AD60"/>
+      <stop offset=".5" stop-color="#AA782F"/>
+      <stop offset="1" stop-color="#8D5B24"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Soft rounded app tile. -->
+  <rect id="app-tile" x="27" y="27" width="970" height="970" rx="193" fill="url(#tile)" filter="url(#tile-relief)"/>
+  <rect x="29" y="29" width="966" height="966" rx="191" stroke="url(#tile-rim)" stroke-width="3"/>
+
+  <g id="vault" filter="url(#object-shadow)">
+    <!-- Fixed frame and the recess revealed by the opened V-shaped door. -->
+    <path id="vault-frame" d="M404 319 L541 159 Q555 142 576 142 H742 Q775 142 754 175 L545 448 Q526 475 544 503 L779 840 Q800 871 764 878 H560 Q542 878 529 857 L404 739Z" fill="#4D299B"/>
+    <path id="vault-interior" d="M416 324 L549 165 Q559 155 573 155 H719 L512 447 Q493 474 512 505 L747 860 H565 L416 735Z" fill="url(#cavity)" stroke="#7953C1" stroke-opacity=".45" stroke-width="5" stroke-linejoin="round"/>
+
+    <!-- Fixed vertical stem of the letter K. -->
+    <rect id="k-stem" x="153" y="130" width="278" height="750" rx="46" fill="url(#purple-stem)" filter="url(#purple-bevel)"/>
+
+    <!-- The two right arms form one door, opening from the middle. -->
+    <use id="opened-door-thickness" href="#door-shape" xlink:href="#door-shape" transform="translate(-12 -2)" fill="url(#door-edge)"/>
+    <use href="#door-shape" xlink:href="#door-shape" fill="url(#purple-door)" filter="url(#purple-bevel)"/>
+  </g>
+
+  <!-- One beveled gold escutcheon surrounds both the round opening and tooth slot. -->
+  <g id="lock" filter="url(#key-shadow)">
+    <use href="#lock-plate-shape" xlink:href="#lock-plate-shape" transform="translate(-3 -1)" fill="url(#lock-side)"/>
+    <use id="lock-plate" href="#lock-plate-shape" xlink:href="#lock-plate-shape" fill="url(#gold-ring)" filter="url(#gold-bevel)"/>
+    <!-- A shaded inner lip makes the complete opening read as a cut into the metal. -->
+    <use id="keyhole-inner-bevel" href="#keyhole-opening" xlink:href="#keyhole-opening" fill="none" stroke="url(#lock-recess)" stroke-width="8" stroke-linejoin="round"/>
+    <!-- The straight slot clears the key teeth, whose lowest point is y=569. -->
+    <use id="keyhole-slot" href="#keyhole-opening" xlink:href="#keyhole-opening" fill="#000"/>
+  </g>
+
+  <g id="inserted-key" filter="url(#key-shadow)">
+    <!-- Broad, individually cut teeth remain readable at icon sizes. -->
+    <path id="key-teeth" d="M548 493 H664 V561 Q664 569 656 569 H642 Q635 569 635 562 V544 Q635 540 631 540 H624 Q620 540 620 544 V559 Q620 566 613 566 H603 Q596 566 596 559 V530 Q596 526 592 526 H585 Q581 526 581 530 V553 Q581 560 574 560 H555 Q548 560 548 553Z" fill="url(#gold-teeth)" filter="url(#gold-bevel)"/>
+    <rect id="key-shaft" x="466" y="449" width="292" height="63" rx="25" fill="url(#gold-shaft)"/>
+    <path d="M488 455 H727" stroke="#FFF2BD" stroke-opacity=".56" stroke-width="4" stroke-linecap="round"/>
+    <ellipse id="key-collar" cx="739" cy="481" rx="25" ry="44" fill="url(#gold-bow)" filter="url(#gold-bevel)"/>
+
+    <!-- A compound path creates a genuine transparent hole through the bow. -->
+    <use href="#key-bow" xlink:href="#key-bow" transform="translate(4 7)" fill="url(#gold-side)"/>
+    <use href="#key-bow" xlink:href="#key-bow" fill="url(#gold-bow)" filter="url(#gold-bevel)"/>
+  </g>
+</svg>

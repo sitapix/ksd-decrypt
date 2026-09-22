@@ -14,7 +14,10 @@ fi
 
 gh release upload "$RELEASE_TAG" \
   release-assets/KSD-Decrypt-macOS-universal.dmg \
+  release-assets/KSD-Decrypt-macOS-arm64.dmg \
+  release-assets/KSD-Decrypt-macOS-x64.dmg \
   release-assets/KSD-Decrypt-Windows-x64-setup.exe \
+  release-assets/KSD-Decrypt-Windows-x64-offline-setup.exe \
   release-assets/SHA256SUMS.txt --clobber
 
 # A prerelease never replaces the stable download linked from the README.

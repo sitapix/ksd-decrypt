@@ -1,12 +1,13 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "KSD Decrypt",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "identifier": "app.unfold.recovery",
   "build": {
     "beforeBuildCommand": "npm run build",
     "beforeDevCommand": "npm run build",
-    "frontendDist": "../dist"
+    "frontendDist": "../dist",
+    "removeUnusedCommands": true
   },
   "app": {
     "windows": [
@@ -61,7 +62,7 @@
       },
       "minimumWebview2Version": "110.0.1531.0",
       "webviewInstallMode": {
-        "type": "offlineInstaller"
+        "type": "downloadBootstrapper"
       }
     }
   }

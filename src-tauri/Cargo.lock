@@ -1960,13 +1960,14 @@ dependencies = [
 
 [[package]]
 name = "ksd-decrypt"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "aes",
  "block2",
  "crc32fast",
  "ctr",
  "infer",
+ "memchr",
  "objc2",
  "objc2-app-kit",
  "objc2-foundation",
@@ -3193,6 +3194,16 @@ dependencies = [
  "cfg-if",
  "cpufeatures",
  "digest",
+ "sha2-asm",
+]
+
+[[package]]
+name = "sha2-asm"
+version = "0.6.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b845214d6175804686b2bd482bcffe96651bb2d1200742b712003504a2dac1ab"
+dependencies = [
+ "cc",
 ]
 
 [[package]]

@@ -64,10 +64,10 @@ impl RecoveredFile {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub struct Format {
-    pub extension: String,
-    pub mime: String,
+    pub extension: &'static str,
+    pub mime: &'static str,
 }
 
 fn err(message: impl Into<String>) -> io::Error {
@@ -140,10 +140,7 @@ fn identify(bytes: &[u8]) -> io::Result<Format> {
             None
         };
         if let Some((extension, mime)) = custom {
-            return Ok(Format {
-                extension: extension.into(),
-                mime: mime.into(),
-            });
+            return Ok(Format { extension, mime });
         }
     }
     if bytes.len() >= 32 {
@@ -160,23 +157,20 @@ fn identify(bytes: &[u8]) -> io::Result<Format> {
             None
         };
         if let Some((extension, mime)) = raw {
-            return Ok(Format {
-                extension: extension.into(),
-                mime: mime.into(),
-            });
+            return Ok(Format { extension, mime });
         }
     }
     if bytes.len() >= 4 * 192 {
         if (0..4).all(|i| bytes[i * 188] == 0x47) {
             return Ok(Format {
-                extension: "ts".into(),
-                mime: "video/mp2t".into(),
+                extension: "ts",
+                mime: "video/mp2t",
             });
         }
         if (0..4).all(|i| bytes[4 + i * 192] == 0x47) {
             return Ok(Format {
-                extension: "mts".into(),
-                mime: "video/mp2t".into(),
+                extension: "mts",
+                mime: "video/mp2t",
             });
         }
     }
@@ -185,8 +179,8 @@ fn identify(bytes: &[u8]) -> io::Result<Format> {
         return Err(err("Unsupported media type."));
     }
     Ok(Format {
-        extension: kind.extension().to_owned(),
-        mime: kind.mime_type().to_owned(),
+        extension: kind.extension(),
+        mime: kind.mime_type(),
     })
 }
 
@@ -254,12 +248,12 @@ pub fn safe_filename(input: &Path, format: &Format) -> String {
         .unwrap_or_default()
         .to_string_lossy()
         .to_ascii_lowercase();
-    let extension = match (format.extension.as_str(), original_ext.as_str()) {
+    let extension = match (format.extension, original_ext.as_str()) {
         ("jpg", "jpeg" | "jpe" | "jfif")
         | ("tif", "tiff" | "dng" | "nef" | "arw" | "cr2" | "pef" | "srw" | "nrw")
         | ("mp4", "m4v" | "3gp" | "3g2")
-        | ("mts", "m2ts") => original_ext,
-        _ => format.extension.clone(),
+        | ("mts", "m2ts") => original_ext.as_str(),
+        _ => format.extension,
     };
     let stem = Path::new(&name)
         .file_stem()
@@ -315,7 +309,7 @@ fn validate_jpeg(path: &Path, cancel: &AtomicBool) -> io::Result<()> {
                 if buffer.is_empty() {
                     return Err(err("The JPEG is truncated. Its original has been kept."));
                 }
-                let found = buffer.iter().position(|b| *b == 255);
+                let found = memchr::memchr(255, buffer);
                 let count = found.unwrap_or(buffer.len());
                 reader.consume(count);
                 if found.is_some() {
@@ -360,7 +354,7 @@ fn validate_jpeg(path: &Path, cancel: &AtomicBool) -> io::Result<()> {
             saw_scan = true;
             in_scan = true;
         }
-        reader.seek(SeekFrom::Current((len - 2) as i64))?;
+        reader.seek_relative((len - 2) as i64)?;
     }
 }
 
@@ -463,10 +457,22 @@ fn recover_to(
     mut progress: impl FnMut(u64, &str),
 ) -> io::Result<RecoveredFile> {
     check_cancel(cancel)?;
-    let format = probe(&input.path)?;
     let mut source = File::open(&input.path)?;
     let before = source.metadata()?;
     let header = read_header(&mut source)?;
+    let mut cipher = LegacyCipher::new(KEY.into(), (&header[3705..3721]).into());
+    let mut original_hash = Sha256::new();
+    original_hash.update(header);
+    let mut recovered_hash = Sha256::new();
+    // Small photos need only their payload size; large files stay bounded at
+    // one MiB. Read and decrypt the first chunk once, including identification.
+    let buffer_len = usize::try_from(before.len().saturating_sub(HEADER as u64))
+        .unwrap_or(CHUNK)
+        .clamp(1, CHUNK);
+    let mut buffer = vec![0; buffer_len];
+    let mut count = decrypt_chunk(&mut source, &mut buffer, &mut cipher, &mut original_hash)?;
+    let format = identify(&buffer[..count.min(65536)])?;
+    check_cancel(cancel)?;
     let group = if input.path.components().any(|p| p.as_os_str() == ".thumbs") {
         "Thumbnails"
     } else if input.path.components().any(|p| p.as_os_str() == ".breakin") {
@@ -488,24 +494,15 @@ fn recover_to(
             format!("Cannot save here: {e}. Choose another output folder."),
         )
     })?;
-    let mut cipher = LegacyCipher::new(KEY.into(), (&header[3705..3721]).into());
-    let mut original_hash = Sha256::new();
-    original_hash.update(header);
-    let mut recovered_hash = Sha256::new();
-    let mut buffer = vec![0; CHUNK];
     let mut written = 0u64;
-    loop {
+    while count != 0 {
         check_cancel(cancel)?;
-        let count = source.read(&mut buffer)?;
-        if count == 0 {
-            break;
-        }
-        original_hash.update(&buffer[..count]);
-        cipher.apply_keystream(&mut buffer[..count]);
         recovered_hash.update(&buffer[..count]);
         temporary.write_all(&buffer[..count])?;
         written += count as u64;
         progress(written, "recovering");
+        check_cancel(cancel)?;
+        count = decrypt_chunk(&mut source, &mut buffer, &mut cipher, &mut original_hash)?;
     }
     if written + HEADER as u64 != before.len()
         || source.metadata()?.modified()? != before.modified()?
@@ -516,7 +513,7 @@ fn recover_to(
     }
     temporary.flush()?;
     progress(written, "checking");
-    let detail = match format.extension.as_str() {
+    let detail = match format.extension {
         "jpg" => {
             validate_jpeg(temporary.path(), cancel)?;
             "JPEG structure checked; original bytes preserved."
@@ -550,6 +547,18 @@ fn recover_to(
         source_sha256: Some(format!("{:x}", original_hash.finalize())),
         recovered_sha256: Some(format!("{:x}", recovered_hash.finalize())),
     })
+}
+
+fn decrypt_chunk(
+    source: &mut File,
+    buffer: &mut [u8],
+    cipher: &mut LegacyCipher,
+    original_hash: &mut Sha256,
+) -> io::Result<usize> {
+    let count = source.read(buffer)?;
+    original_hash.update(&buffer[..count]);
+    cipher.apply_keystream(&mut buffer[..count]);
+    Ok(count)
 }
 
 fn persist_unique(

@@ -1,6 +1,6 @@
 [package]
 name = "ksd-decrypt"
-version = "1.0.0"
+version = "1.0.1"
 description = "Private recovery for legacy KeepSafe photos and videos"
 authors = ["KSD Decrypt contributors"]
 edition = "2024"
@@ -15,7 +15,9 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2.6.3", features = [] }
 
 [dependencies]
-tauri = { version = "2.11.6", features = ["macos-private-api"] }
+# Keep the usual desktop features except dynamic-acl: permissions are fixed at
+# build time, so runtime capability registration and its metadata are unused.
+tauri = { version = "2.11.6", default-features = false, features = ["wry", "compression", "common-controls-v6", "x11", "dbus", "macos-private-api"] }
 tauri-plugin-dialog = "2.7.3"
 tauri-plugin-opener = "2.5.5"
 serde = { version = "1", features = ["derive"] }
@@ -26,8 +28,14 @@ ctr = "0.9"
 crc32fast = "1"
 sha2 = "0.10"
 infer = "0.19"
+memchr = "2"
 tempfile = "3"
 walkdir = "2"
+
+[target.'cfg(all(target_os = "macos", target_arch = "aarch64"))'.dependencies]
+# sha2 0.10 gates ARM hardware acceleration behind asm. Scope it to Apple
+# silicon: sha2-asm does not support Windows. Runtime CPU detection is retained.
+sha2 = { version = "0.10", features = ["asm"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 block2 = "0.6.2"
@@ -36,5 +44,13 @@ objc2-app-kit = { version = "0.3.2", default-features = false, features = ["std"
 objc2-foundation = { version = "0.3.2", default-features = false, features = ["std", "NSArray", "NSString", "NSURL"] }
 
 [profile.release]
-lto = "thin"
+# Preserve streaming recovery throughput; remove unused IPC code for size.
+opt-level = 3
+codegen-units = 1
+lto = true
 strip = true
+
+# Build-time proc macros are loaded by the compiler, not shipped. Stripping
+# their dylibs can produce invalid LINKEDIT alignment on macOS 27.
+[profile.release.build-override]
+strip = false

@@ -8,7 +8,7 @@ KSD Decrypt is a desktop app for recovering photos and videos from **legacy Andr
 
 Built with Tauri 2, Rust, and a framework-free TypeScript interface for Mac and Windows. KSD Decrypt is independent of KeepSafe and is not affiliated with or endorsed by it.
 
-**Project status:** GitHub Actions builds universal Mac and Windows x64 installers for tagged releases. Installers are unsigned or ad-hoc signed; native installation and recovery still need verification on each target system.
+**Project status:** GitHub Actions builds Apple silicon, Intel, and universal Mac installers plus standard and offline Windows x64 installers for tagged releases. Installers are unsigned or ad-hoc signed; native installation and recovery still need verification on each target system.
 
 ## Features
 
@@ -26,10 +26,10 @@ Recovery makes no network requests and streams files in 1 MiB chunks. There is n
 
 ### Requirements
 
-| Platform | Target requirements                                                                                  |
-| -------- | ---------------------------------------------------------------------------------------------------- |
-| Mac      | macOS 12.3 or later; the universal build includes Apple silicon and Intel.                           |
-| Windows  | 64-bit Windows 10/11 with Microsoft WebView2; the installer includes the offline WebView2 installer. |
+| Platform | Target requirements                                                                               |
+| -------- | ------------------------------------------------------------------------------------------------- |
+| Mac      | macOS 12.3 or later; choose Apple silicon or Intel for a smaller download, or universal for both. |
+| Windows  | 64-bit Windows 10/11 with Microsoft WebView2; the standard installer downloads it when needed.    |
 
 These are the configured build targets. They do not establish that every platform has been runtime-tested. The operating system and WebView2 manage their own updates.
 
@@ -37,8 +37,10 @@ These are the configured build targets. They do not establish that every platfor
 
 Open [the latest release](https://github.com/sitapix/ksd-decrypt/releases/latest) and download the installer for your computer:
 
-- **Mac:** [download the universal DMG](https://github.com/sitapix/ksd-decrypt/releases/latest/download/KSD-Decrypt-macOS-universal.dmg), open it, copy **KSD Decrypt** to **Applications**, and launch it. The same download supports Apple silicon and Intel.
+- **Mac:** download the [Apple silicon DMG](https://github.com/sitapix/ksd-decrypt/releases/latest/download/KSD-Decrypt-macOS-arm64.dmg) or [Intel DMG](https://github.com/sitapix/ksd-decrypt/releases/latest/download/KSD-Decrypt-macOS-x64.dmg). Open it, copy **KSD Decrypt** to **Applications**, and launch it. The larger [universal DMG](https://github.com/sitapix/ksd-decrypt/releases/latest/download/KSD-Decrypt-macOS-universal.dmg) supports both processors.
 - **Windows:** [download the x64 installer](https://github.com/sitapix/ksd-decrypt/releases/latest/download/KSD-Decrypt-Windows-x64-setup.exe), run it, and launch **KSD Decrypt**. It installs for the current user.
+
+The standard Windows installer may need internet access to install or update WebView2. For a disconnected computer, use the [offline Windows installer](https://github.com/sitapix/ksd-decrypt/releases/latest/download/KSD-Decrypt-Windows-x64-offline-setup.exe), which includes the full WebView2 installer. Recovery itself works offline in both versions. The smaller installer options were added in v1.0.1; v1.0.0 has only the universal Mac download and the Windows installer with WebView2 included.
 
 Each release includes `SHA256SUMS.txt` to verify the downloads. Choose an installer from **Assets**, rather than GitHub's source-code archives. You can also [build installers locally](#build-installers).
 
@@ -119,10 +121,14 @@ npm run dev
 
 ### Build installers
 
-On macOS, install both Rust targets for the universal app:
+On macOS, choose a target for the smaller architecture-specific app:
 
 ```sh
 rustup target add aarch64-apple-darwin x86_64-apple-darwin
+npm run build:mac:arm64
+# Or, for Intel:
+npm run build:mac:x64
+# Or, for one download supporting both processors:
 npm run build:mac
 ```
 
@@ -130,11 +136,25 @@ On 64-bit Windows with the MSVC toolchain:
 
 ```sh
 npm run build:windows
+# Or, include WebView2 for offline installation:
+npm run build:windows:offline
 ```
 
 Build outputs appear under `src-tauri/target/`, with installers in the relevant `bundle/dmg/` or `bundle/nsis/` directories. For cross-compilation from macOS, see [Tauri's Windows build guide](https://v2.tauri.app/distribute/windows-installer/); verify the result on Windows before distribution.
 
-The [GitHub Actions workflow](.github/workflows/build.yml) runs checks on pull requests and default-branch pushes. Mac and Windows run in parallel, with npm and Rust dependency caches. Documentation-only changes run lightweight workflow and version checks; new commits cancel stale branch/PR runs. Manual runs also build both installers as artifacts retained for 14 days. Pushing a matching version tag builds both installers and publishes them together as a GitHub release.
+The two Windows variants use the same output filename locally, so copy the standard installer elsewhere before building the offline variant. CI saves each with a distinct release filename.
+
+Release builds use full LTO, one code-generation unit, and removal of IPC commands that are not allowed by the capability list. Rust retains speed optimization (`opt-level = 3`) to preserve streaming recovery throughput. Panic unwinding remains enabled for worker-error handling and cleanup. Benchmark recovery throughput when changing compiler settings.
+
+Tauri's `dynamic-acl` feature is disabled because the app uses only permissions declared at build time; those permissions are still enforced. Other default desktop features remain enabled. Apple silicon Mac builds enable `sha2`'s `asm` feature for hardware SHA-256 acceleration with runtime CPU detection. That dependency is scoped to Apple silicon Macs because `sha2-asm` does not support Windows; Intel and Windows keep their existing SHA-256 backends.
+
+Recovery identifies media from the first decrypted chunk and writes that same chunk, avoiding a separate probe and second source open. Its buffer is limited to the payload size or 1 MiB, whichever is smaller. Format names borrow static strings, and JPEG validation uses vectorized byte searching and seeks within its existing buffer. These changes retain source-change detection, structural checks, cancellation cleanup, and atomic publication of finished files.
+
+The [GitHub Actions workflow](.github/workflows/build.yml) runs checks on pull requests and default-branch pushes. Mac and Windows run in parallel, with npm and Rust dependency caches. Documentation-only changes run lightweight workflow and version checks; new commits cancel stale branch/PR runs. Manual runs build all five installers as artifacts retained for 14 days. Pushing a matching version tag publishes them together as a GitHub release. CI limits the standard Windows installer to 20 MiB, more than 10 times smaller than the 218,055,318-byte v1.0.0 download.
+
+### App icon
+
+`app-icon.svg` is the editable source for the purple vault and gold key icon. Run `npm run icons` to regenerate the platform icons in `src-tauri/icons/` and the full-size `app-icon.png` preview. Rebuild the application afterward so its executable and installer include the updated artwork.
 
 ### Run checks
 
@@ -155,6 +175,21 @@ The Rust tests use 19 synthetic image/video fixtures encrypted independently wit
 
 Playwright tests use mocked native commands. They exercise automatic recovery, destination changes, retries, cancellation, large byte counts, search and pagination, compact windows, keyboard interaction, and automated accessibility checks. Native pickers, platform behavior, and real media playback still need testing in the desktop app.
 
+### Compare recovery performance
+
+Before changing Rust dependencies or release settings, build the recovery CLI and save a copy outside `target/`. Build it again after the change using the same target and toolchain, then compare the saved baseline and candidate:
+
+```sh
+cargo build --release --locked --manifest-path src-tauri/Cargo.toml --example ksd-decrypt-cli
+# Save this executable before making the change, then rebuild it afterward.
+python3 tests/recovery-benchmark.py \
+  --baseline /path/to/saved-baseline-cli \
+  --candidate src-tauri/target/release/examples/ksd-decrypt-cli \
+  --output release-assets/rust-feature-benchmark.json
+```
+
+This requires Python 3.11 or later, `cryptography`, and Pillow. It compares a synthetic 128 MiB MP4, 256 small JPEGs, and eight large JPEGs encoded from deterministic noise, with one warmup and seven timed runs per binary per workload in alternating order. Every run independently checks recovered bytes and unchanged source hashes. The report includes individual samples, medians, and binary hashes. Timing includes the CLI process, inspection, decryption, validation, and file writes with warm filesystem caches; it excludes the native interface and IPC. Run on an otherwise idle machine, and measure the final application bundle separately from the CLI or compressed installer.
+
 ### Optional large-file check
 
 This check requires Python 3.11 or later, the Python `cryptography` package, and at least 10 GiB of free temporary storage. After installing those prerequisites:
@@ -165,6 +200,8 @@ python3 tests/large-file.py src-tauri/target/release/examples/ksd-decrypt-cli
 ```
 
 On Windows, use your Python 3 command and append `.exe` to the CLI path. The script creates an MP4 with a padding box that takes it beyond 4 GiB, encrypts it independently, recovers it through the app's engine, and verifies the source and recovered hashes. Temporary files are removed afterward. This checks large-file I/O, not long-duration playback.
+
+In a macOS sandbox that blocks the kernel queries used by `time -l`, add `--no-resource-timing`; all recovery and hash checks still run.
 
 ### Project structure
 
@@ -194,11 +231,11 @@ Preserve read-only access to originals, protection against output overwrites, lo
 Keep the version in `package.json`, `package-lock.json`, `src-tauri/Cargo.toml`, `src-tauri/Cargo.lock`, and `src-tauri/tauri.conf.json` in sync. Commit the release changes, then push a matching tag, for example:
 
 ```sh
-git tag v1.0.0
-git push origin v1.0.0
+git tag v1.0.1
+git push origin v1.0.1
 ```
 
-The workflow rejects mismatched versions, runs the full checks, builds both platforms, and publishes the release only after both installers are present. Tags such as `v1.1.0-rc.1` produce prereleases without replacing the stable download. Published assets are left unchanged on reruns.
+The workflow rejects mismatched versions, runs the full checks, builds both platforms, and publishes the release only after all five installers are present. Tags such as `v1.1.0-rc.1` produce prereleases without replacing the stable download. Published assets are left unchanged on reruns.
 
 For public distribution, sign and notarize the Mac app with a Developer ID, sign the Windows executable and installer, and test each installer on its target operating system. A passing build alone does not establish a tested Windows release.
 

@@ -4,6 +4,7 @@
 Usage: python3 tests/large-file.py /path/to/release/examples/ksd-decrypt-cli
 All generated large files live in a temporary directory and are removed.
 """
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -15,7 +16,12 @@ import tempfile
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 def main():
-    binary = str(Path(sys.argv[1]).resolve())
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('binary', type=Path)
+    parser.add_argument('--no-resource-timing', action='store_true',
+                        help='Skip macOS time -l when sandboxed resource queries are unavailable')
+    args = parser.parse_args()
+    binary = str(args.binary.resolve())
     if shutil.disk_usage(tempfile.gettempdir()).free < 10 * 1024**3:
         raise SystemExit('This optional test needs 10 GiB of free temporary storage.')
     fixture = (Path(__file__).parent / 'fixtures/sample.mp4.ksd').read_bytes()
@@ -50,9 +56,12 @@ def main():
             out.write(encrypt.finalize())
         print(f'Testing {source.stat().st_size:,} encrypted bytes…', flush=True)
         command = [binary, str(root / 'recovered'), str(source)]
-        if sys.platform == 'darwin':
+        if sys.platform == 'darwin' and not args.no_resource_timing:
             command = ['/usr/bin/time', '-l', *command]
-        run = subprocess.run(command, capture_output=True, text=True, check=True)
+        run = subprocess.run(command, capture_output=True, text=True)
+        if run.returncode:
+            print(run.stderr, file=sys.stderr)
+            run.check_returncode()
         result = json.loads(run.stdout)
         assert result['bytes'] == len(prefix) + padding
         assert result['recovered_sha256'] == expected.hexdigest()

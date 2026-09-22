@@ -185,6 +185,23 @@ fn damaged_header_and_wrong_key_are_rejected() {
 }
 
 #[test]
+fn recovery_rechecks_the_source_after_inspection() {
+    let temp = tempfile::tempdir().unwrap();
+    let source = temp.path().join("changed.jpg.ksd");
+    let mut data = fs::read(fixtures().join("sample.jpg.ksd")).unwrap();
+    fs::write(&source, &data).unwrap();
+    let input = inspect(source.clone(), "changed".into());
+    assert!(input.issue.is_none());
+    data[48] ^= 1;
+    fs::write(&source, &data).unwrap();
+    let output = temp.path().join("output");
+    let error = recover_one(&input, &output, &AtomicBool::new(false), |_, _| {}).unwrap_err();
+    assert!(error.to_string().contains("checksum"));
+    assert!(!output.exists());
+    assert_eq!(fs::read(source).unwrap(), data);
+}
+
+#[test]
 fn truncated_jpeg_is_not_published() {
     let temp = tempfile::tempdir().unwrap();
     let path = temp.path().join("truncated.jpg.ksd");
@@ -203,8 +220,8 @@ fn truncated_jpeg_is_not_published() {
 #[test]
 fn output_names_are_portable_and_preserve_jpeg_aliases() {
     let format = Format {
-        extension: "jpg".into(),
-        mime: "image/jpeg".into(),
+        extension: "jpg",
+        mime: "image/jpeg",
     };
     assert_eq!(
         safe_filename(Path::new("0000000000000.photo.jpeg.ksd"), &format),

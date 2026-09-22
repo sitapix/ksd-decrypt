@@ -93,7 +93,7 @@ jobs:
       - run: npm test
       - run: npx playwright install chrome
       - run: npm run test:ui
-      - name: Build universal Mac app and DMG
+      - name: Build Mac apps and DMGs
         if: needs.prepare.outputs.package == 'true' && runner.os == 'macOS'
         run: |
           npm run build:mac -- --ci -- --locked
@@ -102,12 +102,28 @@ jobs:
           done
           mkdir -p release-assets
           cp src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg release-assets/KSD-Decrypt-macOS-universal.dmg
-      - name: Build Windows x64 installer
+          # The universal build already compiled both executables. Bundle each
+          # architecture separately without repeating the Rust compilation.
+          for pair in aarch64-apple-darwin:arm64 x86_64-apple-darwin:x64; do
+            target="${pair%:*}"
+            architecture="${pair#*:}"
+            npm run tauri -- bundle --target "$target" --bundles app,dmg --ci
+            expected_arch="$architecture"
+            if [[ "$architecture" == x64 ]]; then expected_arch=x86_64; fi
+            test "$(lipo -archs "src-tauri/target/$target/release/bundle/macos/KSD Decrypt.app/Contents/MacOS/ksd-decrypt")" = "$expected_arch"
+            cp "src-tauri/target/$target/release/bundle/dmg/"*.dmg "release-assets/KSD-Decrypt-macOS-$architecture.dmg"
+          done
+      - name: Build Windows x64 installers
         if: needs.prepare.outputs.package == 'true' && runner.os == 'Windows'
         run: |
           npm run build:windows -- --ci -- --locked
           mkdir -p release-assets
           cp src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*-setup.exe release-assets/KSD-Decrypt-Windows-x64-setup.exe
+          # Keep the standard download more than 10x smaller than v1.0.0
+          # (218,055,318 bytes), even as the application grows.
+          python3 -c 'from pathlib import Path; size = Path("release-assets/KSD-Decrypt-Windows-x64-setup.exe").stat().st_size; print(f"Standard Windows installer: {size:,} bytes"); assert 0 < size <= 20 * 1024**2, "Standard installer exceeds the 20 MiB budget"'
+          npm run tauri -- bundle --target x86_64-pc-windows-msvc --bundles nsis --config src-tauri/tauri.windows-offline.conf.json --ci
+          cp src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*-setup.exe release-assets/KSD-Decrypt-Windows-x64-offline-setup.exe
       - name: Save installers
         uses: actions/upload-artifact@v7
         if: needs.prepare.outputs.package == 'true'
@@ -156,12 +172,15 @@ jobs:
           pattern: KSD-Decrypt-*
           merge-multiple: true
           path: release-assets
-      - name: Verify both installers and create checksums
+      - name: Verify all installers and create checksums
         working-directory: release-assets
         run: |
           test -s KSD-Decrypt-macOS-universal.dmg
+          test -s KSD-Decrypt-macOS-arm64.dmg
+          test -s KSD-Decrypt-macOS-x64.dmg
           test -s KSD-Decrypt-Windows-x64-setup.exe
-          sha256sum KSD-Decrypt-macOS-universal.dmg KSD-Decrypt-Windows-x64-setup.exe > SHA256SUMS.txt
+          test -s KSD-Decrypt-Windows-x64-offline-setup.exe
+          sha256sum KSD-Decrypt-macOS-*.dmg KSD-Decrypt-Windows-x64-*.exe > SHA256SUMS.txt
       - name: Publish complete release
         env:
           GH_TOKEN: ${{ github.token }}
